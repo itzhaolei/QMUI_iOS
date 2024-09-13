@@ -97,7 +97,11 @@ static BOOL kHasAddedMenuControllerNotification = NO;
 - (UIWindow *)windowForFirstResponder {
     __block UIWindow *resultWindow = nil;
     [UIApplication.sharedApplication.windows enumerateObjectsUsingBlock:^(__kindof UIWindow * _Nonnull window, NSUInteger idx, BOOL * _Nonnull stop) {
-        if (window != UIApplication.sharedApplication.delegate.window) {
+        UIWindow *window_current = UIApplication.sharedApplication.delegate.window;
+        if (!window_current) {
+            window_current = UIApplication.sharedApplication.windows.firstObject;
+        }
+        if (window != window_current) {
             UIResponder *responder = [self findFirstResponderInView:window];
             if (responder) {
                 resultWindow = window;

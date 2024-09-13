@@ -667,7 +667,11 @@ static CGFloat preferredLayoutWidth = -1;
                                         @([self screenSizeFor58Inch].width),
                                         @([self screenSizeFor40Inch].width)];
         preferredLayoutWidth = SCREEN_WIDTH;
-        UIWindow *window = UIApplication.sharedApplication.delegate.window ?: [[UIWindow alloc] init];// iOS 9 及以上的系统，新 init 出来的 window 自动被设置为当前 App 的宽度
+        UIWindow *window_current = UIApplication.sharedApplication.delegate.window;
+        if (!window_current) {
+            window_current = UIApplication.sharedApplication.windows.firstObject;
+        }
+        UIWindow *window = window_current ?: [[UIWindow alloc] init];// iOS 9 及以上的系统，新 init 出来的 window 自动被设置为当前 App 的宽度
         CGFloat windowWidth = CGRectGetWidth(window.bounds);
         for (NSInteger i = 0; i < widths.count; i++) {
             if (windowWidth <= widths[i].qmui_CGFloatValue) {
@@ -900,6 +904,9 @@ static NSInteger isHighPerformanceDevice = -1;
     if (CGSizeEqualToSize(applicationSize, CGSizeZero)) {
         // 实测 MacCatalystApp 通过 [UIScreen mainScreen].applicationFrame 拿不到大小，这里做一下保护
         UIWindow *window = UIApplication.sharedApplication.delegate.window;
+        if (!window) {
+            window = UIApplication.sharedApplication.windows.firstObject;
+        }
         if (window) {
             applicationSize = window.bounds.size;
         } else {
@@ -954,12 +961,18 @@ static NSInteger isHighPerformanceDevice = -1;
 
 + (void)dimmedApplicationWindow {
     UIWindow *window = UIApplication.sharedApplication.delegate.window;
+    if (!window) {
+        window = UIApplication.sharedApplication.windows.firstObject;
+    }
     window.tintAdjustmentMode = UIViewTintAdjustmentModeDimmed;
     [window tintColorDidChange];
 }
 
 + (void)resetDimmedApplicationWindow {
     UIWindow *window = UIApplication.sharedApplication.delegate.window;
+    if (!window) {
+        window = UIApplication.sharedApplication.windows.firstObject;
+    }
     window.tintAdjustmentMode = UIViewTintAdjustmentModeAutomatic;
     [window tintColorDidChange];
 }

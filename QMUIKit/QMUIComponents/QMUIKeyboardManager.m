@@ -709,7 +709,11 @@ static char kAssociatedObjectKey_KeyboardViewFrameObserver;
         keyboardMoveUserInfo.animationOptions = self.lastUserInfo ? self.lastUserInfo.animationOptions : keyboardMoveUserInfo.animationCurve<<16;
         keyboardMoveUserInfo.beginFrame = self.keyboardMoveBeginRect;
         keyboardMoveUserInfo.endFrame = endFrame;
-        keyboardMoveUserInfo.isFloatingKeyboard = keyboardView ? CGRectGetWidth(keyboardView.bounds) < CGRectGetWidth(UIApplication.sharedApplication.delegate.window.bounds) : NO;
+        UIWindow *window = UIApplication.sharedApplication.delegate.window;
+        if (!window) {
+            window = UIApplication.sharedApplication.windows.firstObject;
+        }
+        keyboardMoveUserInfo.isFloatingKeyboard = keyboardView ? CGRectGetWidth(keyboardView.bounds) < CGRectGetWidth(window.bounds) : NO;
         
         if (self.debug) {
             NSLog(@"keyboardDidMoveNotification - %@\n", self);
@@ -720,7 +724,14 @@ static char kAssociatedObjectKey_KeyboardViewFrameObserver;
         self.keyboardMoveBeginRect = endFrame;
         
         if (self.currentResponder) {
-            UIWindow *mainWindow = UIApplication.sharedApplication.keyWindow ?: UIApplication.sharedApplication.delegate.window;
+            UIWindow *window = UIApplication.sharedApplication.delegate.window;
+            if (!window) {
+                window = UIApplication.sharedApplication.windows.firstObject;
+            }
+            UIWindow *mainWindow = UIApplication.sharedApplication.keyWindow ?: window;
+            if (!mainWindow) {
+                mainWindow = window;
+            }
             if (mainWindow) {
                 CGRect keyboardRect = keyboardMoveUserInfo.endFrame;
                 CGFloat distanceFromBottom = [QMUIKeyboardManager distanceFromMinYToBottomInView:mainWindow keyboardRect:keyboardRect];
@@ -792,8 +803,14 @@ static char kAssociatedObjectKey_KeyboardViewFrameObserver;
     if (CGRectIsNull(rect) || CGRectIsInfinite(rect)) {
         return rect;
     }
-    
-    UIWindow *mainWindow = UIApplication.sharedApplication.keyWindow ?: UIApplication.sharedApplication.delegate.window;
+    UIWindow *window = UIApplication.sharedApplication.delegate.window;
+    if (!window) {
+        window = UIApplication.sharedApplication.windows.firstObject;
+    }
+    UIWindow *mainWindow = UIApplication.sharedApplication.keyWindow ?: window;
+    if (!mainWindow) {
+        mainWindow = window;
+    }
     if (!mainWindow) {
         if (view) {
             [view convertRect:rect fromView:nil];
@@ -940,6 +957,9 @@ static char kAssociatedObjectKey_KeyboardViewFrameObserver;
     // iPhone、iPad 全屏/分屏/台前调度，都没这个问题
 //    UIWindow *keyboardWindow = keyboardView.window;
     UIWindow *keyboardWindow = UIApplication.sharedApplication.delegate.window;
+    if (!keyboardWindow) {
+        keyboardWindow = UIApplication.sharedApplication.windows.firstObject;
+    }
     if (!keyboardView || !keyboardWindow) {
         return 0;
     } else {
