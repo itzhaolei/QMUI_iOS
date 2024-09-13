@@ -62,9 +62,9 @@ QMUISynthesizeIdCopyProperty(qmui_prefersHomeIndicatorAutoHiddenBlock, setQmui_p
         OverrideImplementation([UIViewController class], @selector(viewWillTransitionToSize:withTransitionCoordinator:), ^id(__unsafe_unretained Class originClass, SEL originCMD, IMP (^originalIMPProvider)(void)) {
             return ^(UIViewController *selfObject, CGSize size, id<UIViewControllerTransitionCoordinator> coordinator) {
                 
-                UIWindow *window = UIApplication.sharedApplication.delegate.window;
+                UIWindow *window = UIApplication.sharedApplication.windows.firstObject;
                 if (!window) {
-                    window = UIApplication.sharedApplication.windows.firstObject;
+                    window = UIApplication.sharedApplication.delegate.window;
                 }
                 if (selfObject == window.rootViewController) {
                     CGSize originalSize = selfObject.view.frame.size;
@@ -579,9 +579,9 @@ QMUISynthesizeBOOLProperty(qmui_willAppearByInteractivePopGestureRecognizer, set
 @implementation QMUIHelper (ViewController)
 
 + (nullable UIViewController *)visibleViewController {
-    UIWindow *window = UIApplication.sharedApplication.delegate.window;
+    UIWindow *window = UIApplication.sharedApplication.windows.firstObject;
     if (!window) {
-        window = UIApplication.sharedApplication.windows.firstObject;
+        window = UIApplication.sharedApplication.delegate.window;
     }
     UIViewController *rootViewController = window.rootViewController;
     UIViewController *visibleViewController = [rootViewController qmui_visibleViewControllerIfExist];

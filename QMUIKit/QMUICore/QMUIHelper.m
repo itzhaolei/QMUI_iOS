@@ -667,9 +667,9 @@ static CGFloat preferredLayoutWidth = -1;
                                         @([self screenSizeFor58Inch].width),
                                         @([self screenSizeFor40Inch].width)];
         preferredLayoutWidth = SCREEN_WIDTH;
-        UIWindow *window_current = UIApplication.sharedApplication.delegate.window;
+        UIWindow *window_current = UIApplication.sharedApplication.windows.firstObject;
         if (!window_current) {
-            window_current = UIApplication.sharedApplication.windows.firstObject;
+            window_current = UIApplication.sharedApplication.delegate.window;
         }
         UIWindow *window = window_current ?: [[UIWindow alloc] init];// iOS 9 及以上的系统，新 init 出来的 window 自动被设置为当前 App 的宽度
         CGFloat windowWidth = CGRectGetWidth(window.bounds);
@@ -903,9 +903,9 @@ static NSInteger isHighPerformanceDevice = -1;
     CGSize applicationSize = CGSizeMake(applicationFrame.size.width + applicationFrame.origin.x, applicationFrame.size.height + applicationFrame.origin.y);
     if (CGSizeEqualToSize(applicationSize, CGSizeZero)) {
         // 实测 MacCatalystApp 通过 [UIScreen mainScreen].applicationFrame 拿不到大小，这里做一下保护
-        UIWindow *window = UIApplication.sharedApplication.delegate.window;
+        UIWindow *window = UIApplication.sharedApplication.windows.firstObject;
         if (!window) {
-            window = UIApplication.sharedApplication.windows.firstObject;
+            window = UIApplication.sharedApplication.delegate.window;
         }
         if (window) {
             applicationSize = window.bounds.size;
@@ -960,18 +960,18 @@ static NSInteger isHighPerformanceDevice = -1;
 @implementation QMUIHelper (UIApplication)
 
 + (void)dimmedApplicationWindow {
-    UIWindow *window = UIApplication.sharedApplication.delegate.window;
+    UIWindow *window = UIApplication.sharedApplication.windows.firstObject;
     if (!window) {
-        window = UIApplication.sharedApplication.windows.firstObject;
+        window = UIApplication.sharedApplication.delegate.window;
     }
     window.tintAdjustmentMode = UIViewTintAdjustmentModeDimmed;
     [window tintColorDidChange];
 }
 
 + (void)resetDimmedApplicationWindow {
-    UIWindow *window = UIApplication.sharedApplication.delegate.window;
+    UIWindow *window = UIApplication.sharedApplication.windows.firstObject;
     if (!window) {
-        window = UIApplication.sharedApplication.windows.firstObject;
+        window = UIApplication.sharedApplication.delegate.window;
     }
     window.tintAdjustmentMode = UIViewTintAdjustmentModeAutomatic;
     [window tintColorDidChange];

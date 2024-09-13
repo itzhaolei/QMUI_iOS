@@ -273,9 +273,9 @@
             if (UIApplication.sharedApplication.keyWindow == self.window) {
                 if (self.previousKeyWindow.hidden) {
                     // 保护了这个 issue 记录的情况，避免主 window 丢失 keyWindow https://github.com/Tencent/QMUI_iOS/issues/315
-                    UIWindow *window = UIApplication.sharedApplication.delegate.window;
+                    UIWindow *window = UIApplication.sharedApplication.windows.firstObject;
                     if (!window) {
-                        window = UIApplication.sharedApplication.windows.firstObject;
+                        window = UIApplication.sharedApplication.delegate.window;
                     }
                     [window makeKeyWindow];
                 } else {

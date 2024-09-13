@@ -44,9 +44,9 @@
 @implementation NSObject (QMUIWindowSizeMonitor)
 
 - (void)qmui_addSizeObserverForMainWindow:(QMUIWindowSizeObserverHandler)handler {
-    UIWindow *window = UIApplication.sharedApplication.delegate.window;
+    UIWindow *window = UIApplication.sharedApplication.windows.firstObject;
     if (!window) {
-        window = UIApplication.sharedApplication.windows.firstObject;
+        window = UIApplication.sharedApplication.delegate.window;
     }
     [self qmui_addSizeObserverForWindow:window handler:handler];
 }

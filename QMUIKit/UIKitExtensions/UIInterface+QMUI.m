@@ -185,9 +185,9 @@ QMUISynthesizeNSIntegerProperty(lastOrientationChangedByHelper, setLastOrientati
         
         __block BOOL result = YES;
         UIInterfaceOrientationMask mask = 1 << interfaceOrientation;
-        UIWindow *window_current = UIApplication.sharedApplication.delegate.window;
+        UIWindow *window_current = UIApplication.sharedApplication.windows.firstObject;
         if (!window_current) {
-            window_current = UIApplication.sharedApplication.windows.firstObject;
+            window_current = UIApplication.sharedApplication.delegate.window;
         }
         UIWindow *window = self.view.window ?: window_current;
         [window.windowScene requestGeometryUpdateWithPreferences:[[UIWindowSceneGeometryPreferencesIOS alloc] initWithInterfaceOrientations:mask] errorHandler:^(NSError * _Nonnull error) {
